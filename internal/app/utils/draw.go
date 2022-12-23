@@ -25,6 +25,13 @@ func DrawRectangle(imd *imdraw.IMDraw, bounds pixel.Rect, color color.Color, thi
 	imd.Rectangle(thickness)
 }
 
+func DrawSquare(imd *imdraw.IMDraw, pos pixel.Vec, size float64, color color.Color) {
+  imd.Color = color
+	imd.Push(pos.Add(pixel.Vec{X: size, Y: size}))
+	imd.Push(pos.Sub(pixel.Vec{X: size, Y: size}))
+	imd.Rectangle(0)
+}
+
 func DrawCircle(
 	imd *imdraw.IMDraw,
 	pos pixel.Vec,
