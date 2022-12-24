@@ -2,6 +2,7 @@ package sim
 
 import (
 	"image/color"
+	"math"
 	"polity/internal/app/engine"
 	"polity/internal/app/utils"
 
@@ -10,6 +11,10 @@ import (
 )
 
 type SettlementType uint8
+
+const (
+  MaxPopulation = 1_000_000
+)
 
 const (
   Village SettlementType = iota
@@ -24,7 +29,7 @@ type Settlement struct {
 }
 
 func NewSettlement(name string, settlement_type SettlementType, pos pixel.Vec, population uint32, color color.Color) *Settlement {
-	return &Settlement{
+  return &Settlement{
 		Name:       name,
 		Population: population,
 		Type:       settlement_type,
@@ -32,8 +37,23 @@ func NewSettlement(name string, settlement_type SettlementType, pos pixel.Vec, p
 	}
 }
 
-func (s *Settlement) Draw(imd *imdraw.IMDraw) {
-  utils.DrawSquare(imd, s.Position, 2, s.Color)
+func calcSizeSin(x float64) float64 {
+  return math.Sin((math.Pi*x)/2)*5
+}
 
-  // utils.DrawCircle(imd, s.Position, 10, s.Color, 0)
+func calcSize(pop uint32, max uint32) float64 {
+  relation := float64(pop) / float64(max)
+  size := calcSizeSin(relation)
+  return size
+}
+
+func (s *Settlement) Draw(imd *imdraw.IMDraw) {
+  if s.Type == City {
+    size := 4 + calcSize(s.Population, MaxPopulation)
+    utils.DrawSquare(imd, s.Position, size, s.Color)
+  }
+  if s.Type == Village {
+    size := 2 + calcSize(s.Population, MaxPopulation/2)
+    utils.DrawCircle(imd, s.Position, size, s.Color, size/2)
+  }
 }

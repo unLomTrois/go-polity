@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"math"
 	"math/rand"
 	sim "polity/internal/app/simulation"
 	"polity/internal/app/utils"
@@ -29,7 +27,7 @@ func check(err error) {
 func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "polity",
-		Bounds: pixel.R(0, 0, 1024, 720),
+		Bounds: pixel.R(0, 0, 2000, 1000),
 		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
@@ -45,18 +43,17 @@ func run() {
   arr := []*sim.Settlement{}
 
   for i := 0; i < 100; i++ {
-    x := float64(i)/100
-    y := math.Exp(x) / math.Pow((math.Exp(x) + 1), 2.0)
-    fmt.Println(i, x, y)
-
     settlement := sim.NewSettlement(
-      "Ur", sim.City, pixel.Vec{
-      	X: x * win.Bounds().W(),
-      	Y: y * win.Bounds().H(),
-      },
-      1_000,
+      "Ur", sim.City, utils.RandPosition(win.Bounds()),
+      uint32(utils.RandBetween(100, sim.MaxPopulation/3)),
       utils.RandColor(),
     )
+
+    if settlement.Population < sim.MaxPopulation / 5 && rand.Float32() > 0.2 {
+      settlement.Type = sim.Village
+    }
+
+
     arr = append(arr, settlement)
   }
 
