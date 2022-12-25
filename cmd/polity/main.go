@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"math/rand"
 	"polity/internal/app/engine"
 	"polity/internal/app/sim"
@@ -53,6 +54,9 @@ func gameloop(win *pixelgl.Window) {
 		camera.Update()
 		win.SetMatrix(camera.Matrix)
 
+		if win.JustPressed(pixelgl.MouseButtonLeft) {
+			log.Println(camera.Matrix.Unproject(win.MousePosition()))
+		}
 		// drawing
 		for _, s := range arr {
 			s.Draw(imd)
