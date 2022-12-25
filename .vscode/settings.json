@@ -4,5 +4,5 @@
     "editor.defaultFormatter": "golang.go"
   },
   "go.formatTool": "gofmt",
-  "go.lintTool": "golangci-lint"
+  "go.lintTool": "staticcheck"
 }

@@ -10,11 +10,11 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
-type SettlementType uint8
-
 const (
 	MaxPopulation = 1_000_000
 )
+
+type SettlementType uint8
 
 const (
 	Tribe SettlementType = iota
