@@ -13,23 +13,23 @@ import (
 type SettlementType uint8
 
 const (
-  MaxPopulation = 1_000_000
+	MaxPopulation = 1_000_000
 )
 
 const (
-  Tribe SettlementType = iota
-  City
+	Tribe SettlementType = iota
+	City
 )
 
 type Settlement struct {
-	Name string
+	Name       string
 	Population uint32 // max population is like 4 294 967 295
-  Type SettlementType
+	Type       SettlementType
 	engine.Drawable
 }
 
 func NewSettlement(name string, settlement_type SettlementType, pos pixel.Vec, population uint32, color color.Color) *Settlement {
-  return &Settlement{
+	return &Settlement{
 		Name:       name,
 		Population: population,
 		Type:       settlement_type,
@@ -38,22 +38,22 @@ func NewSettlement(name string, settlement_type SettlementType, pos pixel.Vec, p
 }
 
 func calcSizeSin(x float64) float64 {
-  return math.Sin((math.Pi*x)/2)*5
+	return math.Sin((math.Pi*x)/2) * 5
 }
 
 func calcSize(pop uint32, max uint32) float64 {
-  relation := float64(pop) / float64(max)
-  size := calcSizeSin(relation)
-  return size
+	relation := float64(pop) / float64(max)
+	size := calcSizeSin(relation)
+	return size
 }
 
 func (s *Settlement) Draw(imd *imdraw.IMDraw) {
-  if s.Type == City {
-    size := 4 + calcSize(s.Population, MaxPopulation)
-    utils.DrawSquare(imd, s.Position, size, s.Color)
-  }
-  if s.Type == Tribe {
-    size := 4 + calcSize(s.Population, MaxPopulation/2)
-    utils.DrawCircle(imd, s.Position, size, s.Color, size/2)
-  }
+	if s.Type == City {
+		size := 4 + calcSize(s.Population, MaxPopulation)
+		utils.DrawSquare(imd, s.Position, size, s.Color)
+	}
+	if s.Type == Tribe {
+		size := 4 + calcSize(s.Population, MaxPopulation/2)
+		utils.DrawCircle(imd, s.Position, size, s.Color, size/2)
+	}
 }

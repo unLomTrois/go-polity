@@ -41,26 +41,26 @@ func run() {
 	// bounds of simulation
 	// simbounds := win.Bounds()
 
-  arr := []*sim.Settlement{}
+	arr := []*sim.Settlement{}
 
-  // generate tribes
-  for i := 0; i < 90; i++ {
-    tribe := sim.NewSettlement(
-      "Ur", sim.Tribe, utils.RandPosition(win.Bounds()),
-      uint32(utils.RandBetween(30, 1_000)),
-      utils.RandColor(),
-    )
-    arr = append(arr, tribe)
-  }
-  // generate cities
-  for i := 0; i < 10; i++ {
-    tribe := sim.NewSettlement(
-      names.GenerateCityName(), sim.City, utils.RandPosition(win.Bounds()),
-      uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
-      utils.RandColor(),
-    )
-    arr = append(arr, tribe)
-  }
+	// generate tribes
+	for i := 0; i < 90; i++ {
+		tribe := sim.NewSettlement(
+			"Ur", sim.Tribe, utils.RandPosition(win.Bounds()),
+			uint32(utils.RandBetween(30, 1_000)),
+			utils.RandColor(),
+		)
+		arr = append(arr, tribe)
+	}
+	// generate cities
+	for i := 0; i < 10; i++ {
+		tribe := sim.NewSettlement(
+			names.GenerateCityName(), sim.City, utils.RandPosition(win.Bounds()),
+			uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
+			utils.RandColor(),
+		)
+		arr = append(arr, tribe)
+	}
 
 	for !win.Closed() {
 
@@ -68,11 +68,11 @@ func run() {
 		win.Clear(colornames.Black)
 		imd.Clear()
 
-    for _, s := range arr {
-      s.Draw(imd)
-    }
+		for _, s := range arr {
+			s.Draw(imd)
+		}
 
-    imd.Draw(win)
+		imd.Draw(win)
 
 		win.Update()
 	}

@@ -1,5 +1,5 @@
 package names
 
 func GenerateCityName() string {
-  return "Ur"
+	return "Ur"
 }

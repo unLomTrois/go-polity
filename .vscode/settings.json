@@ -3,8 +3,6 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "golang.go"
   },
-  "go.formatTool": "custom",
-  "go.alternateTools": {
-    "customFormatter": "golines"
-  }
+  "go.formatTool": "gofmt",
+  "go.lintTool": "golangci-lint"
 }
