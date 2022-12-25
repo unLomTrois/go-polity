@@ -51,10 +51,14 @@ func gameloop(win *pixelgl.Window) {
 	imgui.CurrentIO().SetFontGlobalScale(2)
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
+	list := []string{"Ur", "Uruk", "Nom", "Kiev", "Moscow"}
+
 	qt := quadtree.NewQuadTree2(win.Bounds())
 	for index := range arr {
 		qt.Insert(&arr[index])
 	}
+
+	var kek int32 = 0
 
 	last := time.Now()
 	for !win.Closed() {
@@ -70,6 +74,7 @@ func gameloop(win *pixelgl.Window) {
 		imgui.Begin("Image Test")
 
 		imgui.Text(fmt.Sprintf("%.2f", dt))
+		imgui.ListBox("cities", &kek, list)
 		imgui.End()
 
 		// cam
