@@ -6,7 +6,7 @@
 package cellmap
 
 import (
-	sim "polity/internal/app/simulation"
+	"polity/internal/app/sim"
 
 	"github.com/faiface/pixel"
 )

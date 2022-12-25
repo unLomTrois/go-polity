@@ -3,7 +3,7 @@ package main
 import (
 	"math/rand"
 	"polity/internal/app/engine"
-	sim "polity/internal/app/simulation"
+	"polity/internal/app/sim"
 	"time"
 
 	"github.com/faiface/pixel"

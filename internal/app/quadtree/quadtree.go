@@ -2,7 +2,7 @@ package quadtree
 
 import (
 	"image/color"
-	sim "polity/internal/app/simulation"
+	"polity/internal/app/sim"
 	"polity/internal/app/utils"
 
 	"github.com/faiface/pixel"
