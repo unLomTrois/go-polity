@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"math/rand"
+	"polity/internal/app/engine"
 	sim "polity/internal/app/simulation"
 	"time"
 
@@ -40,17 +42,37 @@ func gameloop(win *pixelgl.Window) {
 
 	arr := sim.GenerateSettlements(win.Bounds())
 
+	camera := engine.NewCamera(win, win.Bounds().Center())
+
+	zoomspeed := 0.1
+
 	for !win.Closed() {
 		// отрисовка
 		win.Clear(colornames.Black)
 		imd.Clear()
 
+		// camera inputs
+		scroll := win.MouseScroll().Y
+		if scroll != 0 {
+			camera.Zoom += zoomspeed * scroll
+			if camera.Zoom < 1 {
+				camera.Zoom = 1
+			}
+			log.Println(camera.Zoom)
+		}
+
+		// cam
+		camera.Update()
+		win.SetMatrix(camera.Matrix)
+
+		// drawing
 		for _, s := range arr {
 			s.Draw(imd)
 		}
 
 		imd.Draw(win)
 
+		win.SetMatrix(pixel.IM)
 		win.Update()
 	}
 }
