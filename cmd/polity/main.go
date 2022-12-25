@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	names "polity/internal/app/names"
 	sim "polity/internal/app/simulation"
 	"polity/internal/app/utils"
 	"time"
@@ -54,7 +55,7 @@ func run() {
   // generate cities
   for i := 0; i < 10; i++ {
     tribe := sim.NewSettlement(
-      "Ur", sim.City, utils.RandPosition(win.Bounds()),
+      names.GenerateCityName(), sim.City, utils.RandPosition(win.Bounds()),
       uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
       utils.RandColor(),
     )
