@@ -2,7 +2,7 @@ package main
 
 import (
 	"math/rand"
-	names "polity/internal/app/names"
+	"polity/internal/app/names"
 	sim "polity/internal/app/simulation"
 	"polity/internal/app/utils"
 	"time"
@@ -13,16 +13,16 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-func main() {
-	rand.Seed(time.Now().UnixNano())
-
-	pixelgl.Run(run)
-}
-
 func check(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	pixelgl.Run(run)
 }
 
 func run() {
@@ -34,6 +34,10 @@ func run() {
 	win, err := pixelgl.NewWindow(cfg)
 	check(err)
 
+	gameloop(win)
+}
+
+func gameloop(win *pixelgl.Window) {
 	// cmap := cellmap.New(win.Bounds())
 
 	imd := imdraw.New(nil)
