@@ -53,7 +53,7 @@ func (s *Settlement) Draw(imd *imdraw.IMDraw) {
 		utils.DrawSquare(imd, s.Position, size, s.Color)
 	}
 	if s.Type == Tribe {
-		size := 4 + calcSize(s.Population, MaxPopulation/2)
+		size := 3 + calcSize(s.Population, MaxPopulation)
 		utils.DrawCircle(imd, s.Position, size, s.Color, size/2)
 	}
 }
