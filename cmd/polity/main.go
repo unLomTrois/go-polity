@@ -44,7 +44,7 @@ func gameloop(win *pixelgl.Window) {
 
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
-	zoomspeed := 0.1
+	zoomspeed := 0.2
 
 	for !win.Closed() {
 		// отрисовка
@@ -57,6 +57,7 @@ func gameloop(win *pixelgl.Window) {
 			camera.Zoom += zoomspeed * scroll
 			if camera.Zoom < 1 {
 				camera.Zoom = 1
+				camera.Position = win.Bounds().Center()
 			}
 			log.Println(camera.Zoom)
 		}
