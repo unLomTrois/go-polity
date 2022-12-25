@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"polity/internal/app/engine"
 	"polity/internal/app/sim"
+	"polity/internal/app/utils"
 	"time"
 
 	"github.com/faiface/pixel"
@@ -57,6 +58,7 @@ func gameloop(win *pixelgl.Window) {
 			s.Draw(imd)
 		}
 
+		utils.DrawBounds(imd, win.Bounds(), colornames.White)
 		imd.Draw(win)
 
 		win.SetMatrix(pixel.IM)
