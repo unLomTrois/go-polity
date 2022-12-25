@@ -2,9 +2,7 @@ package main
 
 import (
 	"math/rand"
-	"polity/internal/app/names"
 	sim "polity/internal/app/simulation"
-	"polity/internal/app/utils"
 	"time"
 
 	"github.com/faiface/pixel"
@@ -40,7 +38,7 @@ func run() {
 func gameloop(win *pixelgl.Window) {
 	imd := imdraw.New(nil)
 
-	arr := GenerateSettlements(win.Bounds())
+	arr := sim.GenerateSettlements(win.Bounds())
 
 	for !win.Closed() {
 		// отрисовка
@@ -55,29 +53,4 @@ func gameloop(win *pixelgl.Window) {
 
 		win.Update()
 	}
-}
-
-func GenerateSettlements(bounds pixel.Rect) []*sim.Settlement {
-	arr := []*sim.Settlement{}
-
-	// generate tribes
-	for i := 0; i < 900; i++ {
-		tribe := sim.NewSettlement(
-			"Ur", sim.Tribe, utils.RandPosition(bounds),
-			uint32(utils.RandBetween(30, 1_000)),
-			utils.RandomNiceColor(),
-		)
-		arr = append(arr, tribe)
-	}
-	// generate cities
-	for i := 0; i < 100; i++ {
-		tribe := sim.NewSettlement(
-			names.GenerateCityName(), sim.City, utils.RandPosition(bounds),
-			uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
-			utils.RandomNiceColor(),
-		)
-		arr = append(arr, tribe)
-	}
-
-	return arr
 }
