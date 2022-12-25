@@ -11,7 +11,7 @@ func GenerateSettlements(bounds pixel.Rect) []*Settlement {
 	arr := []*Settlement{}
 
 	// generate tribes
-	for i := 0; i < 900; i++ {
+	for i := 0; i < 80; i++ {
 		tribe := NewSettlement(
 			names.GenerateName(), Tribe, utils.RandPosition(bounds),
 			uint32(utils.RandBetween(30, 1_000)),
@@ -20,7 +20,7 @@ func GenerateSettlements(bounds pixel.Rect) []*Settlement {
 		arr = append(arr, tribe)
 	}
 	// generate cities
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 20; i++ {
 		tribe := NewSettlement(
 			names.GenerateName(), City, utils.RandPosition(bounds),
 			uint32(utils.RandBetween(1_000, MaxPopulation/3)),

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"polity/internal/app/engine"
+	"polity/internal/app/quadtree"
 	"polity/internal/app/sim"
-	"polity/internal/app/utils"
 	"time"
 
 	"github.com/dusk125/pixelui"
@@ -51,6 +51,11 @@ func gameloop(win *pixelgl.Window) {
 	imgui.CurrentIO().SetFontGlobalScale(2)
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
+	qt := quadtree.NewQuadTree2(win.Bounds())
+	for index := range arr {
+		qt.Insert(&arr[index].Drawable)
+	}
+
 	last := time.Now()
 	for !win.Closed() {
 		ui.NewFrame()
@@ -71,16 +76,17 @@ func gameloop(win *pixelgl.Window) {
 		camera.Update(dt)
 		win.SetMatrix(camera.Matrix)
 
-		if win.JustPressed(pixelgl.MouseButtonLeft) {
-			// log.Println()
-			// log.Println(camera.Matrix.Unproject(win.MousePosition()))
-		}
+		// if win.JustPressed(pixelgl.MouseButtonLeft) {
+		// 	log.Println()
+		// 	log.Println(camera.Matrix.Unproject(win.MousePosition()))
+		// }
 		// drawing
 		for _, s := range arr {
 			s.Draw(imd)
 		}
 
-		utils.DrawBounds(imd, win.Bounds(), colornames.White)
+		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
+		qt.Show(imd, colornames.White)
 		imd.Draw(win)
 
 		ui.Draw(win)
