@@ -7,6 +7,10 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 )
 
+var (
+	zoomspeed = 0.2
+)
+
 type Camera struct {
 	win       *pixelgl.Window
 	Position  pixel.Vec
@@ -40,8 +44,21 @@ func (c *Camera) handleInput() {
 	}
 }
 
+func (c *Camera) handleScroll() {
+	// camera inputs
+	scroll := c.win.MouseScroll().Y
+	if scroll != 0 {
+		c.Zoom += zoomspeed * scroll
+		if c.Zoom < 1 {
+			c.Zoom = 1
+			c.Position = c.win.Bounds().Center()
+		}
+	}
+}
+
 func (c *Camera) Update() {
 	c.handleInput()
+	c.handleScroll()
 	screencenter := c.win.Bounds().Center()
 
 	movepos := pixel.V(

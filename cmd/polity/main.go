@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math/rand"
 	"polity/internal/app/engine"
 	sim "polity/internal/app/simulation"
@@ -44,23 +43,10 @@ func gameloop(win *pixelgl.Window) {
 
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
-	zoomspeed := 0.2
-
 	for !win.Closed() {
 		// отрисовка
 		win.Clear(colornames.Black)
 		imd.Clear()
-
-		// camera inputs
-		scroll := win.MouseScroll().Y
-		if scroll != 0 {
-			camera.Zoom += zoomspeed * scroll
-			if camera.Zoom < 1 {
-				camera.Zoom = 1
-				camera.Position = win.Bounds().Center()
-			}
-			log.Println(camera.Zoom)
-		}
 
 		// cam
 		camera.Update()
