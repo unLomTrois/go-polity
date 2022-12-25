@@ -45,13 +45,17 @@ func gameloop(win *pixelgl.Window) {
 
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
+	last := time.Now()
 	for !win.Closed() {
+		dt := time.Since(last).Seconds()
+		last = time.Now()
+
 		// отрисовка
 		win.Clear(colornames.Black)
 		imd.Clear()
 
 		// cam
-		camera.Update()
+		camera.Update(dt)
 		win.SetMatrix(camera.Matrix)
 
 		if win.JustPressed(pixelgl.MouseButtonLeft) {

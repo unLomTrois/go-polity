@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	zoomspeed = 0.2
+	zoomspeed = 10.0
 )
 
 type Camera struct {
@@ -23,32 +23,32 @@ func NewCamera(win *pixelgl.Window, pos pixel.Vec) *Camera {
 	return &Camera{
 		win:       win,
 		Position:  pos,
-		MoveSpeed: 3.0,
+		MoveSpeed: 100,
 		Zoom:      1.0,
 		Matrix:    pixel.IM,
 	}
 }
 
-func (c *Camera) handleInput() {
+func (c *Camera) handleInput(dt float64) {
 	if c.win.Pressed(pixelgl.KeyA) {
-		c.Position.X -= c.MoveSpeed * c.Zoom
+		c.Position.X -= c.MoveSpeed * dt * c.Zoom
 	}
 	if c.win.Pressed(pixelgl.KeyD) {
-		c.Position.X += c.MoveSpeed * c.Zoom
+		c.Position.X += c.MoveSpeed * dt * c.Zoom
 	}
 	if c.win.Pressed(pixelgl.KeyW) {
-		c.Position.Y += c.MoveSpeed * c.Zoom
+		c.Position.Y += c.MoveSpeed * dt * c.Zoom
 	}
 	if c.win.Pressed(pixelgl.KeyS) {
-		c.Position.Y -= c.MoveSpeed * c.Zoom
+		c.Position.Y -= c.MoveSpeed * dt * c.Zoom
 	}
 }
 
-func (c *Camera) handleScroll() {
+func (c *Camera) handleScroll(dt float64) {
 	// camera inputs
 	scroll := c.win.MouseScroll().Y
 	if scroll != 0 {
-		c.Zoom += zoomspeed * scroll
+		c.Zoom += zoomspeed * dt * scroll
 		if c.Zoom < 1 {
 			c.Zoom = 1
 			c.Position = c.win.Bounds().Center()
@@ -56,9 +56,9 @@ func (c *Camera) handleScroll() {
 	}
 }
 
-func (c *Camera) Update() {
-	c.handleInput()
-	c.handleScroll()
+func (c *Camera) Update(dt float64) {
+	c.handleInput(dt)
+	c.handleScroll(dt)
 	screencenter := c.win.Bounds().Center()
 
 	movepos := pixel.V(
