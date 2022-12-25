@@ -1,5 +1,5 @@
 package names
 
-func GenerateCityName() string {
+func GenerateName() string {
 	return "Ur"
 }
