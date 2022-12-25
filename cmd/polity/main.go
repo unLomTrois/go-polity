@@ -38,36 +38,11 @@ func run() {
 }
 
 func gameloop(win *pixelgl.Window) {
-	// cmap := cellmap.New(win.Bounds())
-
 	imd := imdraw.New(nil)
 
-	// bounds of simulation
-	// simbounds := win.Bounds()
-
-	arr := []*sim.Settlement{}
-
-	// generate tribes
-	for i := 0; i < 900; i++ {
-		tribe := sim.NewSettlement(
-			"Ur", sim.Tribe, utils.RandPosition(win.Bounds()),
-			uint32(utils.RandBetween(30, 1_000)),
-			utils.RandomNiceColor(),
-		)
-		arr = append(arr, tribe)
-	}
-	// generate cities
-	for i := 0; i < 100; i++ {
-		tribe := sim.NewSettlement(
-			names.GenerateCityName(), sim.City, utils.RandPosition(win.Bounds()),
-			uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
-			utils.RandomNiceColor(),
-		)
-		arr = append(arr, tribe)
-	}
+	arr := GenerateSettlements(win.Bounds())
 
 	for !win.Closed() {
-
 		// отрисовка
 		win.Clear(colornames.Black)
 		imd.Clear()
@@ -80,4 +55,29 @@ func gameloop(win *pixelgl.Window) {
 
 		win.Update()
 	}
+}
+
+func GenerateSettlements(bounds pixel.Rect) []*sim.Settlement {
+	arr := []*sim.Settlement{}
+
+	// generate tribes
+	for i := 0; i < 900; i++ {
+		tribe := sim.NewSettlement(
+			"Ur", sim.Tribe, utils.RandPosition(bounds),
+			uint32(utils.RandBetween(30, 1_000)),
+			utils.RandomNiceColor(),
+		)
+		arr = append(arr, tribe)
+	}
+	// generate cities
+	for i := 0; i < 100; i++ {
+		tribe := sim.NewSettlement(
+			names.GenerateCityName(), sim.City, utils.RandPosition(bounds),
+			uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
+			utils.RandomNiceColor(),
+		)
+		arr = append(arr, tribe)
+	}
+
+	return arr
 }
