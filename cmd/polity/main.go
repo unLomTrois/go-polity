@@ -59,6 +59,7 @@ func gameloop(win *pixelgl.Window) {
 	}
 
 	var kek int32 = 0
+	var is_quadtree_visible = false
 
 	last := time.Now()
 	for !win.Closed() {
@@ -71,9 +72,9 @@ func gameloop(win *pixelgl.Window) {
 		imd.Clear()
 		imgui.ShowDemoWindow(nil)
 
-		imgui.Begin("Image Test")
-
+		imgui.Begin("Main Settings")
 		imgui.Text(fmt.Sprintf("%.2f", dt))
+		imgui.Checkbox("show quadtree", &is_quadtree_visible)
 		imgui.ListBox("cities", &kek, list)
 		imgui.End()
 
@@ -91,7 +92,10 @@ func gameloop(win *pixelgl.Window) {
 		}
 
 		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
-		qt.Show(imd, colornames.White)
+		if is_quadtree_visible {
+			qt.Show(imd, colornames.White)
+		}
+
 		imd.Draw(win)
 
 		ui.Draw(win)
