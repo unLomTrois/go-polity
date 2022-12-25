@@ -57,3 +57,7 @@ func (s *Settlement) Draw(imd *imdraw.IMDraw) {
 		utils.DrawCircle(imd, s.Position, size, s.Color, size/2)
 	}
 }
+
+func (s *Settlement) Pos() pixel.Vec {
+	return s.Position
+}

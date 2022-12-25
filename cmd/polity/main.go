@@ -53,7 +53,7 @@ func gameloop(win *pixelgl.Window) {
 
 	qt := quadtree.NewQuadTree2(win.Bounds())
 	for index := range arr {
-		qt.Insert(&arr[index].Drawable)
+		qt.Insert(&arr[index])
 	}
 
 	last := time.Now()

@@ -2,7 +2,7 @@ package quadtree
 
 import (
 	"image/color"
-	"polity/internal/app/engine"
+	"polity/internal/app/sim"
 	"polity/internal/app/utils"
 
 	"github.com/faiface/pixel"
@@ -10,23 +10,27 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-type QuadTree2 struct {
-	is_divided bool
-	capacity   int
-	points     []*engine.Drawable
-	boundary   pixel.Rect
-	// children
-	nw *QuadTree2
-	ne *QuadTree2
-	sw *QuadTree2
-	se *QuadTree2
+type Placeble interface {
+	Pos() pixel.Vec
 }
 
-func NewQuadTree2(boundary pixel.Rect) *QuadTree2 {
-	return &QuadTree2{
+type QuadTree2[P Placeble] struct {
+	is_divided bool
+	capacity   int
+	points     []*P
+	boundary   pixel.Rect
+	// children
+	nw *QuadTree2[P]
+	ne *QuadTree2[P]
+	sw *QuadTree2[P]
+	se *QuadTree2[P]
+}
+
+func NewQuadTree2(boundary pixel.Rect) *QuadTree2[*sim.Settlement] {
+	return &QuadTree2[*sim.Settlement]{
 		is_divided: false,
 		capacity:   4,
-		points:     make([]*engine.Drawable, 0),
+		points:     []**sim.Settlement{},
 		boundary:   boundary,
 		nw:         nil,
 		ne:         nil,
@@ -41,8 +45,8 @@ func NewQuadTree2(boundary pixel.Rect) *QuadTree2 {
 // 	}
 // }
 
-func (qt *QuadTree2) Insert(point *engine.Drawable) bool {
-	if !qt.boundary.Contains(point.Position) {
+func (qt *QuadTree2[P]) Insert(point *P) bool {
+	if !qt.boundary.Contains((*point).Pos()) {
 		return false
 	}
 
@@ -75,11 +79,24 @@ func (qt *QuadTree2) Insert(point *engine.Drawable) bool {
 	return false
 }
 
-func (qt *QuadTree2) Subdivide() bool {
+func (qt *QuadTree2[P]) newQT(boundary pixel.Rect) *QuadTree2[P] {
+	return &QuadTree2[P]{
+		is_divided: false,
+		capacity:   4,
+		points:     nil,
+		boundary:   boundary,
+		nw:         nil,
+		ne:         nil,
+		sw:         nil,
+		se:         nil,
+	}
+}
+
+func (qt *QuadTree2[P]) Subdivide() bool {
 	qt.is_divided = true
 
 	// переписать
-	qt.nw = NewQuadTree2(
+	qt.nw = qt.newQT(
 		pixel.R(
 			qt.boundary.Center().X-qt.boundary.W()/2,
 			qt.boundary.Center().Y,
@@ -87,7 +104,7 @@ func (qt *QuadTree2) Subdivide() bool {
 			qt.boundary.Max.Y,
 		),
 	)
-	qt.ne = NewQuadTree2(
+	qt.ne = qt.newQT(
 		pixel.R(
 			qt.boundary.Center().X,
 			qt.boundary.Center().Y,
@@ -95,7 +112,7 @@ func (qt *QuadTree2) Subdivide() bool {
 			qt.boundary.Max.Y,
 		),
 	)
-	qt.sw = NewQuadTree2(
+	qt.sw = qt.newQT(
 		pixel.R(
 			qt.boundary.Center().X-qt.boundary.W()/2,
 			qt.boundary.Min.Y,
@@ -103,7 +120,7 @@ func (qt *QuadTree2) Subdivide() bool {
 			qt.boundary.Center().Y,
 		),
 	)
-	qt.se = NewQuadTree2(
+	qt.se = qt.newQT(
 		pixel.R(
 			qt.boundary.Center().X,
 			qt.boundary.Min.Y,
@@ -122,7 +139,7 @@ func (qt *QuadTree2) Subdivide() bool {
 	return ret
 }
 
-func (qt *QuadTree2) Show(imd *imdraw.IMDraw, color color.Color) {
+func (qt *QuadTree2[P]) Show(imd *imdraw.IMDraw, color color.Color) {
 	utils.DrawBounds(imd, qt.boundary, color)
 
 	if qt.is_divided {
@@ -164,7 +181,7 @@ func (qt *QuadTree2) Show(imd *imdraw.IMDraw, color color.Color) {
 // 	qt.InsertMap(cells)
 // }
 
-func (qt *QuadTree2) clear() {
+func (qt *QuadTree2[P]) clear() {
 	qt.nw = nil
 	qt.ne = nil
 	qt.sw = nil
