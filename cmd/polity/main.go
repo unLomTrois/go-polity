@@ -42,19 +42,23 @@ func run() {
 
   arr := []*sim.Settlement{}
 
-  for i := 0; i < 100; i++ {
-    settlement := sim.NewSettlement(
-      "Ur", sim.City, utils.RandPosition(win.Bounds()),
-      uint32(utils.RandBetween(100, sim.MaxPopulation/3)),
+  // generate tribes
+  for i := 0; i < 90; i++ {
+    tribe := sim.NewSettlement(
+      "Ur", sim.Tribe, utils.RandPosition(win.Bounds()),
+      uint32(utils.RandBetween(30, 1_000)),
       utils.RandColor(),
     )
-
-    if settlement.Population < sim.MaxPopulation / 5 && rand.Float32() > 0.2 {
-      settlement.Type = sim.Village
-    }
-
-
-    arr = append(arr, settlement)
+    arr = append(arr, tribe)
+  }
+  // generate cities
+  for i := 0; i < 10; i++ {
+    tribe := sim.NewSettlement(
+      "Ur", sim.City, utils.RandPosition(win.Bounds()),
+      uint32(utils.RandBetween(1_000, sim.MaxPopulation/3)),
+      utils.RandColor(),
+    )
+    arr = append(arr, tribe)
   }
 
 	for !win.Closed() {

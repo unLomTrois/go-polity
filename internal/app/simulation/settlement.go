@@ -17,7 +17,7 @@ const (
 )
 
 const (
-  Village SettlementType = iota
+  Tribe SettlementType = iota
   City
 )
 
@@ -52,8 +52,8 @@ func (s *Settlement) Draw(imd *imdraw.IMDraw) {
     size := 4 + calcSize(s.Population, MaxPopulation)
     utils.DrawSquare(imd, s.Position, size, s.Color)
   }
-  if s.Type == Village {
-    size := 2 + calcSize(s.Population, MaxPopulation/2)
+  if s.Type == Tribe {
+    size := 4 + calcSize(s.Population, MaxPopulation/2)
     utils.DrawCircle(imd, s.Position, size, s.Color, size/2)
   }
 }
