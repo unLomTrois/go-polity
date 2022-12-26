@@ -14,20 +14,20 @@ type Placeble interface {
 	Pos() pixel.Vec
 }
 
-type QuadTree2[P Placeble] struct {
+type QuadTree[P Placeble] struct {
 	is_divided bool
 	capacity   int
 	points     []P
 	boundary   pixel.Rect
 	// children
-	nw *QuadTree2[P]
-	ne *QuadTree2[P]
-	sw *QuadTree2[P]
-	se *QuadTree2[P]
+	nw *QuadTree[P]
+	ne *QuadTree[P]
+	sw *QuadTree[P]
+	se *QuadTree[P]
 }
 
-func NewQuadTree2(boundary pixel.Rect) *QuadTree2[*sim.Settlement] {
-	return &QuadTree2[*sim.Settlement]{
+func NewQuadTree2(boundary pixel.Rect) *QuadTree[*sim.Settlement] {
+	return &QuadTree[*sim.Settlement]{
 		is_divided: false,
 		capacity:   4,
 		points:     []*sim.Settlement{},
@@ -45,7 +45,7 @@ func NewQuadTree2(boundary pixel.Rect) *QuadTree2[*sim.Settlement] {
 // 	}
 // }
 
-func (qt *QuadTree2[P]) Insert(point P) bool {
+func (qt *QuadTree[P]) Insert(point P) bool {
 	if !qt.boundary.Contains(point.Pos()) {
 		return false
 	}
@@ -79,8 +79,8 @@ func (qt *QuadTree2[P]) Insert(point P) bool {
 	return false
 }
 
-func (qt *QuadTree2[P]) newQT(boundary pixel.Rect) *QuadTree2[P] {
-	return &QuadTree2[P]{
+func (qt *QuadTree[P]) newQT(boundary pixel.Rect) *QuadTree[P] {
+	return &QuadTree[P]{
 		is_divided: false,
 		capacity:   4,
 		points:     nil,
@@ -92,7 +92,7 @@ func (qt *QuadTree2[P]) newQT(boundary pixel.Rect) *QuadTree2[P] {
 	}
 }
 
-func (qt *QuadTree2[P]) Subdivide() bool {
+func (qt *QuadTree[P]) Subdivide() bool {
 	qt.is_divided = true
 
 	// переписать
@@ -139,7 +139,7 @@ func (qt *QuadTree2[P]) Subdivide() bool {
 	return ret
 }
 
-func (qt *QuadTree2[P]) Show(imd *imdraw.IMDraw, color color.Color) {
+func (qt *QuadTree[P]) Show(imd *imdraw.IMDraw, color color.Color) {
 	utils.DrawBounds(imd, qt.boundary, color)
 
 	if qt.is_divided {
@@ -150,7 +150,7 @@ func (qt *QuadTree2[P]) Show(imd *imdraw.IMDraw, color color.Color) {
 	}
 }
 
-func (qt *QuadTree2[P]) Query(boundary pixel.Rect) (points []P) {
+func (qt *QuadTree[P]) Query(boundary pixel.Rect) (points []P) {
 	// cells := make([]*sim.Cell, 0)
 
 	if !qt.boundary.Intersects(boundary) {
@@ -180,11 +180,11 @@ func (qt *QuadTree2[P]) Query(boundary pixel.Rect) (points []P) {
 // 	qt.InsertMap(cells)
 // }
 
-func (qt *QuadTree2[P]) clear() {
-	qt.nw = nil
-	qt.ne = nil
-	qt.sw = nil
-	qt.se = nil
-	qt.is_divided = false
-	qt.points = nil
-}
+// func (qt *QuadTree2[P]) clear() {
+// 	qt.nw = nil
+// 	qt.ne = nil
+// 	qt.sw = nil
+// 	qt.se = nil
+// 	qt.is_divided = false
+// 	qt.points = nil
+// }
