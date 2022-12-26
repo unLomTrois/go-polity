@@ -42,6 +42,16 @@ func run() {
 	gameloop(win)
 }
 
+type Settings struct {
+	is_quadtree_visible bool
+}
+
+func NewSettings() *Settings {
+	return &Settings{
+		is_quadtree_visible: false,
+	}
+}
+
 func gameloop(win *pixelgl.Window) {
 	imd := imdraw.New(nil)
 
@@ -52,15 +62,12 @@ func gameloop(win *pixelgl.Window) {
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
 	settlements := sim.GenerateSettlements(win.Bounds())
-	list := []string{}
 	qt := quadtree.NewQuadTree2(win.Bounds())
 	for _, s := range settlements {
 		qt.Insert(s)
-		list = append(list, s.Name)
 	}
 
-	var kek int32 = 0
-	var is_quadtree_visible = false
+	settings := NewSettings()
 
 	var selected_settlement *sim.Settlement = nil
 	is_imgui_hovered := false
@@ -80,11 +87,9 @@ func gameloop(win *pixelgl.Window) {
 			X: 10,
 			Y: 10,
 		})
-		imgui.Begin("Main Settings")
+		imgui.BeginV("Main Settings", nil, imgui.WindowFlagsAlwaysAutoResize)
 		imgui.Text(fmt.Sprintf("%.2f", dt))
-		imgui.Checkbox("show quadtree", &is_quadtree_visible)
-		imgui.Checkbox("lol", &is_imgui_hovered)
-		imgui.ListBox("cities", &kek, list)
+		imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
 		imgui.End()
 
 		// cam
@@ -133,7 +138,7 @@ func gameloop(win *pixelgl.Window) {
 		}
 
 		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
-		if is_quadtree_visible {
+		if settings.is_quadtree_visible {
 			qt.Show(imd, colornames.White)
 		}
 
