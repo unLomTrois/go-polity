@@ -7,6 +7,7 @@ import (
 	"polity/internal/app/engine"
 	"polity/internal/app/quadtree"
 	"polity/internal/app/sim"
+	"polity/internal/app/utils"
 	"time"
 
 	"github.com/dusk125/pixelui"
@@ -44,19 +45,18 @@ func run() {
 func gameloop(win *pixelgl.Window) {
 	imd := imdraw.New(nil)
 
-	arr := sim.GenerateSettlements(win.Bounds())
-
 	ui := pixelui.NewUI(win, 0)
 	defer ui.Destroy()
 	// ui.AddTTFFont("03b04.ttf", 16)
 	imgui.CurrentIO().SetFontGlobalScale(2)
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
-	list := []string{"Ur", "Uruk", "Nom", "Kiev", "Moscow"}
-
+	settlements := sim.GenerateSettlements(win.Bounds())
+	list := []string{}
 	qt := quadtree.NewQuadTree2(win.Bounds())
-	for index := range arr {
-		qt.Insert(arr[index])
+	for _, s := range settlements {
+		qt.Insert(s)
+		list = append(list, s.Name)
 	}
 
 	var kek int32 = 0
@@ -88,7 +88,8 @@ func gameloop(win *pixelgl.Window) {
 		if win.JustPressed(pixelgl.MouseButtonLeft) {
 			// log.Println()
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
-			query := qt.Query(pixel.R(mousepos.X-5, mousepos.Y-5, mousepos.X+5, mousepos.Y+5))
+			mouse_boundary := pixel.R(mousepos.X-10, mousepos.Y-10, mousepos.X+10, mousepos.Y+10)
+			query := qt.Query(mouse_boundary)
 			if len(query) == 1 {
 				selected_settlement = query[0]
 			}
@@ -113,8 +114,16 @@ func gameloop(win *pixelgl.Window) {
 		}
 
 		// drawing
-		for _, s := range arr {
+		for _, s := range settlements {
 			s.Draw(imd)
+			if selected_settlement == s {
+				if s.Type == sim.City {
+					utils.DrawSquare(imd, s.Position, s.Size+1, colornames.Red, 1)
+				}
+				if s.Type == sim.Tribe {
+					utils.DrawCircle(imd, s.Pos(), s.Size+2, colornames.Red, 1)
+				}
+			}
 		}
 
 		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
