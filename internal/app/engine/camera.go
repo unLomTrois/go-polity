@@ -56,9 +56,11 @@ func (c *Camera) handleScroll(dt float64) {
 	}
 }
 
-func (c *Camera) Update(dt float64) {
+func (c *Camera) Update(dt float64, is_imgui_hovered bool) {
 	c.handleInput(dt)
-	c.handleScroll(dt)
+	if !is_imgui_hovered {
+		c.handleScroll(dt)
+	}
 	screencenter := c.win.Bounds().Center()
 
 	movepos := pixel.V(

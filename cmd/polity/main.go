@@ -63,10 +63,11 @@ func gameloop(win *pixelgl.Window) {
 	var is_quadtree_visible = false
 
 	var selected_settlement *sim.Settlement = nil
-
+	is_imgui_hovered := false
 	last := time.Now()
 	for !win.Closed() {
 		ui.NewFrame()
+		is_imgui_hovered = imgui.CurrentIO().WantCaptureMouse()
 		dt := time.Since(last).Seconds()
 		last = time.Now()
 
@@ -75,17 +76,22 @@ func gameloop(win *pixelgl.Window) {
 		imd.Clear()
 		imgui.ShowDemoWindow(nil)
 
+		imgui.SetNextWindowPos(imgui.Vec2{
+			X: 10,
+			Y: 10,
+		})
 		imgui.Begin("Main Settings")
 		imgui.Text(fmt.Sprintf("%.2f", dt))
 		imgui.Checkbox("show quadtree", &is_quadtree_visible)
+		imgui.Checkbox("lol", &is_imgui_hovered)
 		imgui.ListBox("cities", &kek, list)
 		imgui.End()
 
 		// cam
-		camera.Update(dt)
+		camera.Update(dt, is_imgui_hovered)
 		win.SetMatrix(camera.Matrix)
 
-		if win.JustPressed(pixelgl.MouseButtonLeft) {
+		if !is_imgui_hovered && win.JustPressed(pixelgl.MouseButtonLeft) {
 			// log.Println()
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
 			mouse_boundary := pixel.R(mousepos.X-10, mousepos.Y-10, mousepos.X+10, mousepos.Y+10)
