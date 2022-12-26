@@ -9,8 +9,9 @@ import (
 
 // alphabet
 var consonants = []string{"m", "n", "k", "p", "t", "sh", "r", "l", "v"}
-var vowels = []string{"a", "e", "i", "u", "o"}
-var schemes = []string{"V", "VC", "CV"}
+var finals = []string{"m", "n", "sh", "r", "l", "i"}
+var vowels = []string{"a", "e", "i", "u"}
+var schemes = []string{"V", "VC", "CV", "CVC"}
 
 type NameGenerator struct {
 	consonants []string
@@ -44,7 +45,7 @@ func (g *NameGenerator) generateSyllables() {
 					g.syllables = append(g.syllables, C+V)
 				}
 				if schema == "CVC" {
-					for _, C2 := range consonants {
+					for _, C2 := range finals {
 						g.syllables = append(g.syllables, C+V+C2)
 					}
 				}
@@ -56,19 +57,17 @@ func (g *NameGenerator) generateSyllables() {
 }
 
 func (g *NameGenerator) GenerateName() string {
-	// rand.Shuffle(len(g.syllables), func(i, j int) {
-	// 	g.syllables[i], g.syllables[j] = g.syllables[j], g.syllables[i]
-	// })
-	syllablescount := 1 + rand.Intn(3)
+	rand.Shuffle(len(g.syllables), func(i, j int) {
+		g.syllables[i], g.syllables[j] = g.syllables[j], g.syllables[i]
+	})
+	sylcount := 1 + rand.Intn(3)
 	var name string = ""
-	// log.Print("count ", syllablescount)
 
-	for i := 0; i < syllablescount; i++ {
+	for i := 0; i < sylcount; i++ {
 		randsyl := g.syllables[rand.Intn(len(g.syllables))]
 		name += randsyl
 	}
 
-	// name = cases.(name)
 	caser := []cases.Caser{
 		cases.Title(language.English),
 	}
