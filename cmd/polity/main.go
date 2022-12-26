@@ -89,8 +89,17 @@ func gameloop(win *pixelgl.Window) {
 			// log.Println()
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
 			query := qt.Query(pixel.R(mousepos.X-5, mousepos.Y-5, mousepos.X+5, mousepos.Y+5))
-			if len(query) > 0 {
+			if len(query) == 1 {
 				selected_settlement = query[0]
+			}
+			// find the nearest
+			if len(query) > 1 {
+				selected_settlement = query[0]
+				for _, settlement := range query {
+					if mousepos.To(settlement.Position).Len() < mousepos.To(selected_settlement.Position).Len() {
+						selected_settlement = settlement
+					}
+				}
 			}
 			log.Println(selected_settlement)
 		}
