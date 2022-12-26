@@ -70,6 +70,8 @@ func gameloop(win *pixelgl.Window) {
 	settings := NewSettings()
 
 	var selected_settlement *sim.Settlement = nil
+	var is_settlement_selected bool = selected_settlement != nil
+
 	is_imgui_hovered := false
 	ticker := pixelutils.NewTicker(120)
 	for !win.Closed() {
@@ -88,7 +90,9 @@ func gameloop(win *pixelgl.Window) {
 		// ui
 		imgui.ShowDemoWindow(nil)
 		ShowDebugWindow(fps, settings)
-		ShowSettlementDetailsWindow(selected_settlement)
+		if is_settlement_selected {
+			ShowSettlementDetailsWindow(&is_settlement_selected, selected_settlement)
+		}
 
 		if !is_imgui_hovered && win.JustPressed(pixelgl.MouseButtonLeft) {
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
@@ -106,6 +110,7 @@ func gameloop(win *pixelgl.Window) {
 					}
 				}
 			}
+			is_settlement_selected = selected_settlement != nil
 		}
 
 		// drawing
@@ -157,10 +162,10 @@ func ShowDebugWindow(fps float64, settings *Settings) {
 	imgui.End()
 }
 
-func ShowSettlementDetailsWindow(selected_settlement *sim.Settlement) {
-	if selected_settlement != nil {
-		imgui.Begin("Settlement Details")
-		// imgui.button
+func ShowSettlementDetailsWindow(is_open *bool, selected_settlement *sim.Settlement) {
+	if !imgui.BeginV("Settlement Details", is_open, 0) {
+		imgui.End()
+	} else {
 		imgui.Text("Name: " + selected_settlement.Name)
 		imgui.Text("Type: " + string(selected_settlement.Type))
 		imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
