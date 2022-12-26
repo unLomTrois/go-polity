@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"polity/internal/app/engine"
 	"polity/internal/app/quadtree"
@@ -61,6 +62,8 @@ func gameloop(win *pixelgl.Window) {
 	var kek int32 = 0
 	var is_quadtree_visible = false
 
+	var selected_settlement *sim.Settlement = nil
+
 	last := time.Now()
 	for !win.Closed() {
 		ui.NewFrame()
@@ -82,10 +85,24 @@ func gameloop(win *pixelgl.Window) {
 		camera.Update(dt)
 		win.SetMatrix(camera.Matrix)
 
-		// if win.JustPressed(pixelgl.MouseButtonLeft) {
-		// 	log.Println()
-		// 	log.Println(camera.Matrix.Unproject(win.MousePosition()))
-		// }
+		if win.JustPressed(pixelgl.MouseButtonLeft) {
+			// log.Println()
+			mousepos := camera.Matrix.Unproject(win.MousePosition())
+			query := qt.Query(pixel.R(mousepos.X-5, mousepos.Y-5, mousepos.X+5, mousepos.Y+5))
+			if len(query) > 0 {
+				selected_settlement = *query[0]
+			}
+			log.Println(selected_settlement)
+		}
+
+		if selected_settlement != nil {
+			imgui.Begin(selected_settlement.Name)
+			imgui.Text("name: " + selected_settlement.Name)
+			imgui.Text("Type: " + string(selected_settlement.Type))
+			imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
+			imgui.End()
+		}
+
 		// drawing
 		for _, s := range arr {
 			s.Draw(imd)

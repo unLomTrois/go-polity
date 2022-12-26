@@ -150,31 +150,30 @@ func (qt *QuadTree2[P]) Show(imd *imdraw.IMDraw, color color.Color) {
 	}
 }
 
-// func (qt *QuadTree2) Query(boundary pixel.Rect) (cells []*sim.Cell) {
-// 	// cells := make([]*sim.Cell, 0)
+func (qt *QuadTree2[P]) Query(boundary pixel.Rect) (points []*P) {
+	// cells := make([]*sim.Cell, 0)
 
-// 	if !qt.boundary.Intersects(boundary) {
-// 		return
-// 	}
+	if !qt.boundary.Intersects(boundary) {
+		return nil
+	}
 
-// 	for _, p := range qt.points {
-// 		if boundary.Contains(p.Position) {
-// 			// fmt.Println(p)
-// 			cells = append(cells, p)
-// 		}
-// 	}
+	for _, p := range qt.points {
+		if boundary.Contains((*p).Pos()) {
+			points = append(points, p)
+		}
+	}
 
-// 	if !qt.is_divided {
-// 		return
-// 	}
+	if !qt.is_divided {
+		return points
+	}
 
-// 	cells = append(cells, qt.nw.Query(boundary)...)
-// 	cells = append(cells, qt.ne.Query(boundary)...)
-// 	cells = append(cells, qt.sw.Query(boundary)...)
-// 	cells = append(cells, qt.se.Query(boundary)...)
+	points = append(points, qt.nw.Query(boundary)...)
+	points = append(points, qt.ne.Query(boundary)...)
+	points = append(points, qt.sw.Query(boundary)...)
+	points = append(points, qt.se.Query(boundary)...)
 
-// 	return
-// }
+	return points
+}
 
 // func (qt *QuadTree2) Update(cells map[**sim.Cell]*sim.Cell) {
 // 	qt.clear()

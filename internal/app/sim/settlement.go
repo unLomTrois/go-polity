@@ -14,11 +14,11 @@ const (
 	MaxPopulation = 1_000_000
 )
 
-type SettlementType uint8
+type SettlementType string
 
 const (
-	Tribe SettlementType = iota
-	City
+	Tribe SettlementType = "Tribe"
+	City  SettlementType = "City"
 )
 
 type Settlement struct {
