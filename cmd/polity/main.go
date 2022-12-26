@@ -96,8 +96,8 @@ func gameloop(win *pixelgl.Window) {
 		}
 
 		if selected_settlement != nil {
-			imgui.Begin(selected_settlement.Name)
-			imgui.Text("name: " + selected_settlement.Name)
+			imgui.Begin("Settlement Details")
+			imgui.Text("Name: " + selected_settlement.Name)
 			imgui.Text("Type: " + string(selected_settlement.Type))
 			imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
 			imgui.End()
