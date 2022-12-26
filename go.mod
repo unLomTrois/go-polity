@@ -18,4 +18,5 @@ require (
 	github.com/inkyblackness/imgui-go v1.12.0
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/pzsz/voronoi v0.0.0-20130609164533-4314be88c79f // indirect
+	golang.org/x/text v0.5.0
 )
