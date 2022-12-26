@@ -86,7 +86,7 @@ func gameloop(win *pixelgl.Window) {
 		win.SetMatrix(camera.Matrix)
 
 		// ui
-		// imgui.ShowDemoWindow(nil)
+		imgui.ShowDemoWindow(nil)
 		ShowSettingsWindow(fps, settings)
 		ShowSettlementDetailsWindow(selected_settlement)
 
@@ -145,15 +145,22 @@ func ShowSettingsWindow(fps float64, settings *Settings) {
 		X: 10,
 		Y: 10,
 	})
+	imgui.PushStyleVarVec2(imgui.StyleVarWindowPadding, imgui.Vec2{
+		X: 10,
+		Y: 10,
+	})
 	imgui.BeginV("Settings", nil, imgui.WindowFlagsAlwaysAutoResize)
+
 	imgui.Text(fmt.Sprintf("FPS: %.2f", fps))
 	imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
+	imgui.PopStyleVar()
 	imgui.End()
 }
 
 func ShowSettlementDetailsWindow(selected_settlement *sim.Settlement) {
 	if selected_settlement != nil {
 		imgui.Begin("Settlement Details")
+		// imgui.button
 		imgui.Text("Name: " + selected_settlement.Name)
 		imgui.Text("Type: " + string(selected_settlement.Type))
 		imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
