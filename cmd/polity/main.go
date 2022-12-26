@@ -57,7 +57,6 @@ func gameloop(win *pixelgl.Window) {
 
 	ui := pixelui.NewUI(win, 0)
 	defer ui.Destroy()
-	// ui.AddTTFFont("03b04.ttf", 16)
 	imgui.CurrentIO().SetFontGlobalScale(2)
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
