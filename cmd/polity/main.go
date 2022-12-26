@@ -32,7 +32,7 @@ func main() {
 func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "polity",
-		Bounds: pixel.R(0, 0, 2000, 1000),
+		Bounds: pixel.R(0, 0, 1600, 900),
 		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
@@ -56,7 +56,7 @@ func gameloop(win *pixelgl.Window) {
 
 	qt := quadtree.NewQuadTree2(win.Bounds())
 	for index := range arr {
-		qt.Insert(&arr[index])
+		qt.Insert(arr[index])
 	}
 
 	var kek int32 = 0
@@ -90,7 +90,7 @@ func gameloop(win *pixelgl.Window) {
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
 			query := qt.Query(pixel.R(mousepos.X-5, mousepos.Y-5, mousepos.X+5, mousepos.Y+5))
 			if len(query) > 0 {
-				selected_settlement = *query[0]
+				selected_settlement = query[0]
 			}
 			log.Println(selected_settlement)
 		}

@@ -17,7 +17,7 @@ type Placeble interface {
 type QuadTree2[P Placeble] struct {
 	is_divided bool
 	capacity   int
-	points     []*P
+	points     []P
 	boundary   pixel.Rect
 	// children
 	nw *QuadTree2[P]
@@ -30,7 +30,7 @@ func NewQuadTree2(boundary pixel.Rect) *QuadTree2[*sim.Settlement] {
 	return &QuadTree2[*sim.Settlement]{
 		is_divided: false,
 		capacity:   4,
-		points:     []**sim.Settlement{},
+		points:     []*sim.Settlement{},
 		boundary:   boundary,
 		nw:         nil,
 		ne:         nil,
@@ -45,8 +45,8 @@ func NewQuadTree2(boundary pixel.Rect) *QuadTree2[*sim.Settlement] {
 // 	}
 // }
 
-func (qt *QuadTree2[P]) Insert(point *P) bool {
-	if !qt.boundary.Contains((*point).Pos()) {
+func (qt *QuadTree2[P]) Insert(point P) bool {
+	if !qt.boundary.Contains(point.Pos()) {
 		return false
 	}
 
@@ -150,7 +150,7 @@ func (qt *QuadTree2[P]) Show(imd *imdraw.IMDraw, color color.Color) {
 	}
 }
 
-func (qt *QuadTree2[P]) Query(boundary pixel.Rect) (points []*P) {
+func (qt *QuadTree2[P]) Query(boundary pixel.Rect) (points []P) {
 	// cells := make([]*sim.Cell, 0)
 
 	if !qt.boundary.Intersects(boundary) {
@@ -158,7 +158,7 @@ func (qt *QuadTree2[P]) Query(boundary pixel.Rect) (points []*P) {
 	}
 
 	for _, p := range qt.points {
-		if boundary.Contains((*p).Pos()) {
+		if boundary.Contains(p.Pos()) {
 			points = append(points, p)
 		}
 	}
