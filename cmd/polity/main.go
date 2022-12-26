@@ -87,7 +87,7 @@ func gameloop(win *pixelgl.Window) {
 
 		// ui
 		imgui.ShowDemoWindow(nil)
-		ShowSettingsWindow(fps, settings)
+		ShowDebugWindow(fps, settings)
 		ShowSettlementDetailsWindow(selected_settlement)
 
 		if !is_imgui_hovered && win.JustPressed(pixelgl.MouseButtonLeft) {
@@ -140,7 +140,7 @@ func DrawSettlements(settlements []*sim.Settlement, imd *imdraw.IMDraw, selected
 	}
 }
 
-func ShowSettingsWindow(fps float64, settings *Settings) {
+func ShowDebugWindow(fps float64, settings *Settings) {
 	imgui.SetNextWindowPos(imgui.Vec2{
 		X: 10,
 		Y: 10,
@@ -149,7 +149,7 @@ func ShowSettingsWindow(fps float64, settings *Settings) {
 		X: 10,
 		Y: 10,
 	})
-	imgui.BeginV("Settings", nil, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.BeginV("Debug", nil, imgui.WindowFlagsAlwaysAutoResize)
 
 	imgui.Text(fmt.Sprintf("FPS: %.2f", fps))
 	imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
