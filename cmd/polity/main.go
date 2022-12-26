@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/dusk125/pixelui"
+	"github.com/dusk125/pixelutils"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
@@ -70,12 +71,11 @@ func gameloop(win *pixelgl.Window) {
 
 	var selected_settlement *sim.Settlement = nil
 	is_imgui_hovered := false
-	last := time.Now()
+	ticker := pixelutils.NewTicker(120)
 	for !win.Closed() {
 		ui.NewFrame()
 		is_imgui_hovered = imgui.CurrentIO().WantCaptureMouse()
-		dt := time.Since(last).Seconds()
-		last = time.Now()
+		dt, fps := ticker.Tick()
 
 		// отрисовка
 		win.Clear(colornames.Black)
@@ -87,7 +87,7 @@ func gameloop(win *pixelgl.Window) {
 
 		// ui
 		// imgui.ShowDemoWindow(nil)
-		ShowSettingsWindow(dt, settings)
+		ShowSettingsWindow(fps, settings)
 		ShowSettlementDetailsWindow(selected_settlement)
 
 		if !is_imgui_hovered && win.JustPressed(pixelgl.MouseButtonLeft) {
@@ -122,6 +122,7 @@ func gameloop(win *pixelgl.Window) {
 
 		win.SetMatrix(pixel.IM)
 		win.Update()
+		ticker.Wait()
 	}
 }
 
@@ -139,13 +140,13 @@ func DrawSettlements(settlements []*sim.Settlement, imd *imdraw.IMDraw, selected
 	}
 }
 
-func ShowSettingsWindow(dt float64, settings *Settings) {
+func ShowSettingsWindow(fps float64, settings *Settings) {
 	imgui.SetNextWindowPos(imgui.Vec2{
 		X: 10,
 		Y: 10,
 	})
 	imgui.BeginV("Settings", nil, imgui.WindowFlagsAlwaysAutoResize)
-	imgui.Text(fmt.Sprintf("%.2f", dt))
+	imgui.Text(fmt.Sprintf("FPS: %.2f", fps))
 	imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
 	imgui.End()
 }
