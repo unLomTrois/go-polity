@@ -1,7 +1,6 @@
 package names
 
 import (
-	"log"
 	"math/rand"
 
 	"golang.org/x/text/cases"
@@ -9,7 +8,7 @@ import (
 )
 
 // alphabet
-var consonants = []string{"m", "n", "k", "p", "t", "s", "sh", "r", "l", "f", "v"}
+var consonants = []string{"m", "n", "k", "p", "t", "sh", "r", "l", "v"}
 var vowels = []string{"a", "e", "i", "u", "o"}
 var schemes = []string{"V", "VC", "CV"}
 
@@ -53,14 +52,14 @@ func (g *NameGenerator) generateSyllables() {
 		}
 	}
 
-	log.Println(g.syllables)
+	// log.Println(g.syllables)
 }
 
 func (g *NameGenerator) GenerateName() string {
 	// rand.Shuffle(len(g.syllables), func(i, j int) {
 	// 	g.syllables[i], g.syllables[j] = g.syllables[j], g.syllables[i]
 	// })
-	syllablescount := 1 + rand.Intn(4)
+	syllablescount := 1 + rand.Intn(3)
 	var name string = ""
 	// log.Print("count ", syllablescount)
 
@@ -75,7 +74,7 @@ func (g *NameGenerator) GenerateName() string {
 	}
 	name = caser[0].String(name)
 
-	log.Println(name)
+	// log.Println(name)
 
 	return name
 }
