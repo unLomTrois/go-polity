@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"polity/internal/app/engine"
 	"polity/internal/app/quadtree"
@@ -81,23 +80,17 @@ func gameloop(win *pixelgl.Window) {
 		// отрисовка
 		win.Clear(colornames.Black)
 		imd.Clear()
-		imgui.ShowDemoWindow(nil)
-
-		imgui.SetNextWindowPos(imgui.Vec2{
-			X: 10,
-			Y: 10,
-		})
-		imgui.BeginV("Main Settings", nil, imgui.WindowFlagsAlwaysAutoResize)
-		imgui.Text(fmt.Sprintf("%.2f", dt))
-		imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
-		imgui.End()
 
 		// cam
 		camera.Update(dt, is_imgui_hovered)
 		win.SetMatrix(camera.Matrix)
 
+		// ui
+		// imgui.ShowDemoWindow(nil)
+		ShowSettingsWindow(dt, settings)
+		ShowSettlementDetailsWindow(selected_settlement)
+
 		if !is_imgui_hovered && win.JustPressed(pixelgl.MouseButtonLeft) {
-			// log.Println()
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
 			mouse_boundary := pixel.R(mousepos.X-10, mousepos.Y-10, mousepos.X+10, mousepos.Y+10)
 			query := qt.Query(mouse_boundary)
@@ -113,29 +106,10 @@ func gameloop(win *pixelgl.Window) {
 					}
 				}
 			}
-			log.Println(selected_settlement)
-		}
-
-		if selected_settlement != nil {
-			imgui.Begin("Settlement Details")
-			imgui.Text("Name: " + selected_settlement.Name)
-			imgui.Text("Type: " + string(selected_settlement.Type))
-			imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
-			imgui.End()
 		}
 
 		// drawing
-		for _, s := range settlements {
-			s.Draw(imd)
-			if selected_settlement == s {
-				if s.Type == sim.City {
-					utils.DrawSquare(imd, s.Position, s.Size+1, colornames.Red, 1)
-				}
-				if s.Type == sim.Tribe {
-					utils.DrawCircle(imd, s.Pos(), s.Size+2, colornames.Red, 1)
-				}
-			}
-		}
+		DrawSettlements(settlements, imd, selected_settlement)
 
 		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
 		if settings.is_quadtree_visible {
@@ -148,5 +122,40 @@ func gameloop(win *pixelgl.Window) {
 
 		win.SetMatrix(pixel.IM)
 		win.Update()
+	}
+}
+
+func DrawSettlements(settlements []*sim.Settlement, imd *imdraw.IMDraw, selected_settlement *sim.Settlement) {
+	for _, s := range settlements {
+		s.Draw(imd)
+		if selected_settlement == s {
+			if s.Type == sim.City {
+				utils.DrawSquare(imd, s.Position, s.Size+1, colornames.Red, 1)
+			}
+			if s.Type == sim.Tribe {
+				utils.DrawCircle(imd, s.Pos(), s.Size+2, colornames.Red, 1)
+			}
+		}
+	}
+}
+
+func ShowSettingsWindow(dt float64, settings *Settings) {
+	imgui.SetNextWindowPos(imgui.Vec2{
+		X: 10,
+		Y: 10,
+	})
+	imgui.BeginV("Settings", nil, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.Text(fmt.Sprintf("%.2f", dt))
+	imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
+	imgui.End()
+}
+
+func ShowSettlementDetailsWindow(selected_settlement *sim.Settlement) {
+	if selected_settlement != nil {
+		imgui.Begin("Settlement Details")
+		imgui.Text("Name: " + selected_settlement.Name)
+		imgui.Text("Type: " + string(selected_settlement.Type))
+		imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
+		imgui.End()
 	}
 }
