@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"polity/internal/app/engine"
+	"polity/internal/app/gui"
 	"polity/internal/app/quadtree"
 	"polity/internal/app/sim"
 	"polity/internal/app/utils"
@@ -42,16 +42,6 @@ func run() {
 	gameloop(win)
 }
 
-type Settings struct {
-	is_quadtree_visible bool
-}
-
-func NewSettings() *Settings {
-	return &Settings{
-		is_quadtree_visible: false,
-	}
-}
-
 func gameloop(win *pixelgl.Window) {
 	imd := imdraw.New(nil)
 
@@ -66,7 +56,7 @@ func gameloop(win *pixelgl.Window) {
 		qt.Insert(s)
 	}
 
-	settings := NewSettings()
+	settings := engine.NewSettings()
 
 	var selected_settlement *sim.Settlement = nil
 	var is_settlement_selected bool = selected_settlement != nil
@@ -88,9 +78,9 @@ func gameloop(win *pixelgl.Window) {
 
 		// ui
 		imgui.ShowDemoWindow(nil)
-		ShowDebugWindow(fps, settings)
+		gui.ShowDebugWindow(fps, settings)
 		if is_settlement_selected {
-			ShowSettlementDetailsWindow(&is_settlement_selected, selected_settlement)
+			gui.ShowSettlementDetailsWindow(&is_settlement_selected, selected_settlement)
 		}
 
 		if !is_imgui_hovered && win.JustPressed(pixelgl.MouseButtonLeft) {
@@ -116,7 +106,7 @@ func gameloop(win *pixelgl.Window) {
 		DrawSettlements(settlements, imd, selected_settlement)
 
 		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
-		if settings.is_quadtree_visible {
+		if settings.Is_quadtree_visible {
 			qt.Show(imd, colornames.White)
 		}
 
@@ -141,33 +131,5 @@ func DrawSettlements(settlements []*sim.Settlement, imd *imdraw.IMDraw, selected
 				utils.DrawCircle(imd, s.Pos(), s.Size+2, colornames.Red, 1)
 			}
 		}
-	}
-}
-
-func ShowDebugWindow(fps float64, settings *Settings) {
-	imgui.SetNextWindowPos(imgui.Vec2{
-		X: 10,
-		Y: 10,
-	})
-	imgui.PushStyleVarVec2(imgui.StyleVarWindowPadding, imgui.Vec2{
-		X: 10,
-		Y: 10,
-	})
-	imgui.BeginV("Debug", nil, imgui.WindowFlagsAlwaysAutoResize)
-
-	imgui.Text(fmt.Sprintf("FPS: %.2f", fps))
-	imgui.Checkbox("show quadtree", &settings.is_quadtree_visible)
-	imgui.PopStyleVar()
-	imgui.End()
-}
-
-func ShowSettlementDetailsWindow(is_open *bool, selected_settlement *sim.Settlement) {
-	if !imgui.BeginV("Settlement Details", is_open, 0) {
-		imgui.End()
-	} else {
-		imgui.Text("Name: " + selected_settlement.Name)
-		imgui.Text("Type: " + string(selected_settlement.Type))
-		imgui.Text(fmt.Sprintf("Population: %d", selected_settlement.Population))
-		imgui.End()
 	}
 }
