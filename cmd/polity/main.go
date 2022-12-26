@@ -5,8 +5,8 @@ import (
 	"polity/internal/app/engine"
 	"polity/internal/app/gui"
 	"polity/internal/app/quadtree"
+	"polity/internal/app/render"
 	"polity/internal/app/sim"
-	"polity/internal/app/utils"
 	"time"
 
 	"github.com/dusk125/pixelui"
@@ -103,7 +103,7 @@ func gameloop(win *pixelgl.Window) {
 		}
 
 		// drawing
-		DrawSettlements(settlements, imd, selected_settlement)
+		render.DrawSettlements(settlements, imd, selected_settlement)
 
 		// utils.DrawBounds(imd, win.Bounds(), colornames.White)
 		if settings.Is_quadtree_visible {
@@ -117,19 +117,5 @@ func gameloop(win *pixelgl.Window) {
 		win.SetMatrix(pixel.IM)
 		win.Update()
 		ticker.Wait()
-	}
-}
-
-func DrawSettlements(settlements []*sim.Settlement, imd *imdraw.IMDraw, selected_settlement *sim.Settlement) {
-	for _, s := range settlements {
-		s.Draw(imd)
-		if selected_settlement == s {
-			if s.Type == sim.City {
-				utils.DrawSquare(imd, s.Position, s.Size+1, colornames.Red, 1)
-			}
-			if s.Type == sim.Tribe {
-				utils.DrawCircle(imd, s.Pos(), s.Size+2, colornames.Red, 1)
-			}
-		}
 	}
 }
