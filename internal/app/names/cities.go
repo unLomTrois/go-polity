@@ -10,7 +10,7 @@ import (
 
 // alphabet
 var consonants = []string{"m", "n", "k", "g", "p", "t", "sh", "r", "l"}
-var finals = []string{"n", "sh", "r", "l", "i", "k"}
+var finals = []string{"n", "sh", "r", "l", "k", "i"}
 var vowels = []string{"a", "e", "i", "u"}
 var schemes = []string{"V", "VC", "CV", "CVC"}
 
@@ -36,30 +36,32 @@ func NewNameGenerator() *NameGenerator {
 func (g *NameGenerator) generateSyllables() {
 	// g.syllables = append(g.syllables, g.vowels...)
 
-	for _, V := range g.vowels {
-		for _, C := range g.consonants {
+	for _, C := range g.consonants {
+		for _, V := range g.vowels {
 			for _, schema := range g.schemas {
-				if schema == "VC" {
-					for _, C2 := range finals {
-						g.syllables = append(g.syllables, V+C2)
-					}
-				}
-				if schema == "CV" {
-					g.syllables = append(g.syllables, C+V)
-				}
-				if schema == "CVC" {
-					for _, C2 := range finals {
-						if V == "i" && C2 == "i" {
+				switch schema {
+				case "VC":
+					for _, F := range finals {
+						if V == F {
 							continue
 						}
-						g.syllables = append(g.syllables, C+V+C2)
+						g.syllables = append(g.syllables, V+F)
+					}
+				case "CV":
+					g.syllables = append(g.syllables, C+V)
+				case "CVC":
+					for _, F := range finals {
+						if C == F || V == F {
+							continue
+						}
+						g.syllables = append(g.syllables, C+V+F)
 					}
 				}
 			}
 		}
 	}
 
-	// log.Println(g.syllables)
+	log.Println(g.syllables)
 }
 
 func (g *NameGenerator) GenerateName() string {
