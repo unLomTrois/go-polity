@@ -62,8 +62,9 @@ func gameloop(win *pixelgl.Window, settings *engine.Settings) {
 	var is_settlement_selected bool = selected_settlement != nil
 	is_imgui_hovered := false
 
-	daycounter := 0
-	metronome := time.Tick(time.Second / 2)
+	daycounter := 1
+	days_in_year := 360
+	metronome := time.Tick(time.Second)
 
 	ticker := pixelutils.NewTicker(120)
 	for !win.Closed() {
@@ -123,6 +124,9 @@ func gameloop(win *pixelgl.Window, settings *engine.Settings) {
 		select {
 		case <-metronome:
 			daycounter += 1
+			if daycounter >= days_in_year {
+				daycounter = 1
+			}
 		default:
 		}
 	}
