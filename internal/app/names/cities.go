@@ -12,13 +12,23 @@ import (
 var consonants = []string{"m", "n", "k", "g", "p", "t", "sh", "r", "l"}
 var finals = []string{"n", "sh", "r", "l", "k", "i"}
 var vowels = []string{"a", "e", "i", "u"}
-var schemes = []string{"V", "VC", "CV", "CVC"}
+
+type SyllableSchema string
+
+const (
+	V   SyllableSchema = "V"
+	VC  SyllableSchema = "VC"
+	CV  SyllableSchema = "CV"
+	CVC SyllableSchema = "CVC"
+)
+
+var schemes = []SyllableSchema{V, VC, CV, CVC}
 
 type NameGenerator struct {
 	consonants []string
 	vowels     []string
 	syllables  []string
-	schemas    []string
+	schemas    []SyllableSchema
 }
 
 func NewNameGenerator() *NameGenerator {
@@ -34,24 +44,30 @@ func NewNameGenerator() *NameGenerator {
 }
 
 func (g *NameGenerator) generateSyllables() {
-	// g.syllables = append(g.syllables, g.vowels...)
-
-	for _, C := range g.consonants {
-		for _, V := range g.vowels {
-			for _, schema := range g.schemas {
-				switch schema {
-				case "VC":
-					for _, F := range finals {
-						if V == F {
-							continue
-						}
-						g.syllables = append(g.syllables, V+F)
+	for _, schema := range g.schemas {
+		switch schema {
+		case V:
+			g.syllables = append(g.syllables, g.vowels...)
+		case VC:
+			for _, V := range g.vowels {
+				for _, F := range finals {
+					if V == F {
+						continue
 					}
-				case "CV":
+					g.syllables = append(g.syllables, V+F)
+				}
+			}
+		case CV:
+			for _, C := range g.consonants {
+				for _, V := range g.vowels {
 					g.syllables = append(g.syllables, C+V)
-				case "CVC":
+				}
+			}
+		case CVC:
+			for _, C := range g.consonants {
+				for _, V := range g.vowels {
 					for _, F := range finals {
-						if C == F || V == F {
+						if C == F || V == F || (F == "k" && (V == "i" || C == "n")) {
 							continue
 						}
 						g.syllables = append(g.syllables, C+V+F)
@@ -61,7 +77,7 @@ func (g *NameGenerator) generateSyllables() {
 		}
 	}
 
-	log.Println(g.syllables)
+	log.Println(g.syllables, len(g.syllables))
 }
 
 func (g *NameGenerator) GenerateName() string {
