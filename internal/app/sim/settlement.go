@@ -32,10 +32,10 @@ type Settlement struct {
 func NewSettlement(name string, settlement_type SettlementType, pos pixel.Vec, population uint32, color color.Color) *Settlement {
 	var size float64
 	if settlement_type == City {
-		size = 4 + calcSize(population, MaxPopulation)
+		size = 4 + calcSize(population, MaxPopulation/3)
 	}
 	if settlement_type == Tribe {
-		size = 3 + calcSize(population, MaxPopulation)
+		size = calcSize(population, 1_000)
 	}
 
 	return &Settlement{

@@ -39,10 +39,12 @@ func run() {
 	win, err := pixelgl.NewWindow(cfg)
 	check(err)
 
-	gameloop(win)
+	settings := engine.NewSettings()
+
+	gameloop(win, settings)
 }
 
-func gameloop(win *pixelgl.Window) {
+func gameloop(win *pixelgl.Window, settings *engine.Settings) {
 	imd := imdraw.New(nil)
 
 	ui := pixelui.NewUI(win, 0)
@@ -56,12 +58,13 @@ func gameloop(win *pixelgl.Window) {
 		qt.Insert(s)
 	}
 
-	settings := engine.NewSettings()
-
 	var selected_settlement *sim.Settlement = nil
 	var is_settlement_selected bool = selected_settlement != nil
-
 	is_imgui_hovered := false
+
+	daycounter := 0
+	metronome := time.Tick(time.Second / 2)
+
 	ticker := pixelutils.NewTicker(120)
 	for !win.Closed() {
 		ui.NewFrame()
@@ -78,7 +81,7 @@ func gameloop(win *pixelgl.Window) {
 
 		// ui
 		imgui.ShowDemoWindow(nil)
-		gui.ShowDebugWindow(fps, settings)
+		gui.ShowDebugWindow(fps, settings, daycounter)
 		if is_settlement_selected {
 			gui.ShowSettlementDetailsWindow(&is_settlement_selected, selected_settlement)
 		}
@@ -117,5 +120,10 @@ func gameloop(win *pixelgl.Window) {
 		win.SetMatrix(pixel.IM)
 		win.Update()
 		ticker.Wait()
+		select {
+		case <-metronome:
+			daycounter += 1
+		default:
+		}
 	}
 }

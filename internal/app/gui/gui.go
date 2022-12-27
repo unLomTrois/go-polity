@@ -8,7 +8,7 @@ import (
 	"github.com/inkyblackness/imgui-go"
 )
 
-func ShowDebugWindow(fps float64, settings *engine.Settings) {
+func ShowDebugWindow(fps float64, settings *engine.Settings, daycounter int) {
 	imgui.SetNextWindowPos(imgui.Vec2{
 		X: 10,
 		Y: 10,
@@ -21,6 +21,7 @@ func ShowDebugWindow(fps float64, settings *engine.Settings) {
 
 	imgui.Text(fmt.Sprintf("FPS: %.2f", fps))
 	imgui.Checkbox("show quadtree", &settings.Is_quadtree_visible)
+	imgui.Text(fmt.Sprintf("date:%d", daycounter))
 	imgui.PopStyleVar()
 	imgui.End()
 }
