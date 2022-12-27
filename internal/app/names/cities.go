@@ -1,7 +1,6 @@
 package names
 
 import (
-	"log"
 	"math/rand"
 
 	"golang.org/x/text/cases"
@@ -77,7 +76,7 @@ func (g *NameGenerator) generateSyllables() {
 		}
 	}
 
-	log.Println(g.syllables, len(g.syllables))
+	// log.Println(g.syllables, len(g.syllables))
 }
 
 func (g *NameGenerator) GenerateName() string {
@@ -100,7 +99,7 @@ func (g *NameGenerator) GenerateName() string {
 	}
 	name = caser[0].String(name)
 
-	log.Println(name)
+	// log.Println(name)
 
 	return name
 }
