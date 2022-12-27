@@ -1,6 +1,7 @@
 package names
 
 import (
+	"log"
 	"math/rand"
 
 	"golang.org/x/text/cases"
@@ -8,8 +9,8 @@ import (
 )
 
 // alphabet
-var consonants = []string{"m", "n", "k", "p", "t", "sh", "r", "l", "v"}
-var finals = []string{"m", "n", "sh", "r", "l", "i"}
+var consonants = []string{"m", "n", "k", "g", "p", "t", "sh", "r", "l"}
+var finals = []string{"n", "sh", "r", "l", "i", "k"}
 var vowels = []string{"a", "e", "i", "u"}
 var schemes = []string{"V", "VC", "CV", "CVC"}
 
@@ -39,13 +40,18 @@ func (g *NameGenerator) generateSyllables() {
 		for _, C := range g.consonants {
 			for _, schema := range g.schemas {
 				if schema == "VC" {
-					g.syllables = append(g.syllables, V+C)
+					for _, C2 := range finals {
+						g.syllables = append(g.syllables, V+C2)
+					}
 				}
 				if schema == "CV" {
 					g.syllables = append(g.syllables, C+V)
 				}
 				if schema == "CVC" {
 					for _, C2 := range finals {
+						if V == "i" && C2 == "i" {
+							continue
+						}
 						g.syllables = append(g.syllables, C+V+C2)
 					}
 				}
@@ -66,6 +72,9 @@ func (g *NameGenerator) GenerateName() string {
 	for i := 0; i < sylcount; i++ {
 		randsyl := g.syllables[rand.Intn(len(g.syllables))]
 		name += randsyl
+		if sylcount == 3 && i == 0 {
+			name += "-"
+		}
 	}
 
 	caser := []cases.Caser{
@@ -73,7 +82,7 @@ func (g *NameGenerator) GenerateName() string {
 	}
 	name = caser[0].String(name)
 
-	// log.Println(name)
+	log.Println(name)
 
 	return name
 }
