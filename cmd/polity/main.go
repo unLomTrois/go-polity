@@ -91,6 +91,9 @@ func gameloop(win *pixelgl.Window, settings *engine.Settings) {
 			mousepos := camera.Matrix.Unproject(win.MousePosition())
 			mouse_boundary := pixel.R(mousepos.X-10, mousepos.Y-10, mousepos.X+10, mousepos.Y+10)
 			query := qt.Query(mouse_boundary)
+			if len(query) == 0 {
+				selected_settlement = nil
+			}
 			if len(query) == 1 {
 				selected_settlement = query[0]
 			}
