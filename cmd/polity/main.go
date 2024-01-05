@@ -53,9 +53,13 @@ func gameloop(win *pixelgl.Window, settings *engine.Settings) {
 	camera := engine.NewCamera(win, win.Bounds().Center())
 
 	settlements := sim.GenerateSettlements(win.Bounds())
+	var polities []*sim.Polity = []*sim.Polity{}
+
 	qt := quadtree.NewQuadTree2(win.Bounds())
 	for _, s := range settlements {
 		qt.Insert(s)
+		new_polity := sim.NewPolity(s.Name, s.Color, []*sim.Settlement{s})
+		polities = append(polities, new_polity)
 	}
 
 	var selected_settlement *sim.Settlement = nil
@@ -126,10 +130,8 @@ func gameloop(win *pixelgl.Window, settings *engine.Settings) {
 		ticker.Wait()
 		select {
 		case <-metronome:
-			daycounter += 1
-			if daycounter >= days_in_year {
-				daycounter = 1
-			}
+			daycounter = (daycounter + 1) % (days_in_year + 1)
+
 		default:
 		}
 	}

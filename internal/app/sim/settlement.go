@@ -69,3 +69,7 @@ func (s *Settlement) Draw(imd *imdraw.IMDraw) {
 func (s *Settlement) Pos() pixel.Vec {
 	return s.Position
 }
+
+func (s *Settlement) Update() {
+
+}
